@@ -9,15 +9,12 @@ import UIKit
 
 final class NoteDetailView: UIView {
     
-    public var updateNoteData: ((_ noteText: String) -> ())?
-    
     private lazy var mainText: UITextView = {
         let textView = UITextView()
-        textView.text = "Введите текст заметки"
+        textView.text = "Ваша заметка"
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.isEditable = true
         textView.isScrollEnabled = true
-        textView.delegate = self
         
         return textView
     }()
@@ -55,11 +52,5 @@ final class NoteDetailView: UIView {
     }
 }
 
-extension NoteDetailView: UITextViewDelegate {
-    func textViewDidEndEditing(_ textView: UITextView) {
-        print("Note text or title end editing")
-        updateNoteData?(mainText.text)
-    }
-}
 
 

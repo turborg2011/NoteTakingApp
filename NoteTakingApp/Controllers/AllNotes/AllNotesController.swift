@@ -35,20 +35,25 @@ final class AllNotesController: BaseController {
     }
     
     private func updateData() {
-        do {
-            let notes = DataProvider.shared.fetchNotes()
-            let resNotes = notes.map { note in
-                convertToNoteModel(note: note)
-            }
-            var notesData: [NoteModel] = []
-            resNotes.forEach { note in
-                if let note = note {
-                    notesData.append(note)
-                }
-            }
-            
-            notesCollectionView.setData(data: notesData)
+        
+        let notes = DataProvider.shared.fetchNotes()
+        let resNotes = notes.map { note in
+            convertToNoteModel(note: note)
         }
+        var notesData: [NoteModel] = []
+        resNotes.forEach { note in
+            if let note = note {
+                notesData.append(note)
+            }
+        }
+        
+        notesCollectionView.setData(data: notesData)
+    }
+    
+    @objc func addButtonTapped() {
+        let detailVC = NoteDetailController()
+        detailVC.isFav = false
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
@@ -75,6 +80,9 @@ extension AllNotesController {
     override func configure() {
         super.configure()
         
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        self.navigationItem.rightBarButtonItem = addButton
+            
         notesCollectionView.didSelectNote = { [weak self] id, isFav in
             let detailVC = NoteDetailController()
             detailVC.noteID = id
@@ -90,6 +98,6 @@ extension AllNotesController {
         navigationController?.tabBarItem.title = Resources.Strings.TabBar.allNotes
         title = Resources.Strings.NavBar.allNotes
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
+        navigationItem.largeTitleDisplayMode = .never
     }
 }

@@ -91,12 +91,12 @@ extension NotesCollectionView: UICollectionViewDelegateFlowLayout {
 
 extension NotesCollectionView: NoteCellDelegate {
     func addToFavsTapped(_ cell: NoteCell) {
-        if let indexPath = self.indexPath(for: cell) {
-            tapDeleteHandler?(notes[indexPath.item].ID)
-        }
+        print("add to favs tapped")
     }
     
     func delTapped(_ cell: NoteCell) {
-        <#code#>
+        if let indexPath = self.indexPath(for: cell) {
+            tapDeleteHandler?(notes[indexPath.item].ID)
+        }
     }
 }

@@ -105,8 +105,5 @@ extension NoteDetailController {
         
         navigationItem.largeTitleDisplayMode = .never
         
-        noteView.updateNoteData = { [weak self] noteText in
-            self?.saveNote(noteText: noteText)
-        }
     }
 }

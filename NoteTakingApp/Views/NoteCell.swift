@@ -68,7 +68,6 @@ class NoteCell: UICollectionViewCell {
         textView.isEditable = false
         textView.isScrollEnabled = false
         textView.isSelectable = false
-        textView.backgroundColor = .blue
         textView.isUserInteractionEnabled = false
         textView.font = .systemFont(ofSize: 20)
         
