@@ -75,10 +75,16 @@ extension AllNotesController {
     override func configure() {
         super.configure()
         
-        notesCollectionView.didSelectNote = { [weak self] id in
+        notesCollectionView.didSelectNote = { [weak self] id, isFav in
             let detailVC = NoteDetailController()
             detailVC.noteID = id
+            detailVC.isFav = isFav
             self?.navigationController?.pushViewController(detailVC, animated: true)
+        }
+        
+        notesCollectionView.tapDeleteHandler = { [weak self] id in
+            DataProvider.shared.deleteNote(with: id)
+            self?.updateData()
         }
         
         navigationController?.tabBarItem.title = Resources.Strings.TabBar.allNotes

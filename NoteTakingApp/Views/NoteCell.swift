@@ -7,9 +7,15 @@
 
 import UIKit
 
+protocol NoteCellDelegate {
+    func addToFavsTapped(_ cell: NoteCell)
+    func delTapped(_ cell: NoteCell)
+}
+
 class NoteCell: UICollectionViewCell {
     
-    weak var titleLabel: UILabel!
+    weak var textView: UITextView!
+    var delegate: NoteCellDelegate?
     
     private lazy var delButton = {
         let button = UIButton()
@@ -24,7 +30,7 @@ class NoteCell: UICollectionViewCell {
     }()
     
     @objc private func touchDelButton() {
-        print("touch del btn")
+        delegate?.delTapped(self)
     }
     
     private func configure() {
@@ -41,29 +47,32 @@ class NoteCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        let titleLabel = UILabel(frame: .zero)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(titleLabel)
+        let textView = UITextView(frame: .zero)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(textView)
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(
-                equalTo: contentView.topAnchor
+            textView.topAnchor.constraint(
+                equalTo: contentView.topAnchor, constant: 10
             ),
-            titleLabel.bottomAnchor.constraint(
-                equalTo: contentView.bottomAnchor
+            textView.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor,constant: -50
             ),
-            titleLabel.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor
+            textView.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor, constant: 10
             ),
-            titleLabel.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor
+            textView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor, constant: -10
             ),
         ])
         
-        self.titleLabel = titleLabel
+        textView.isEditable = false
+        textView.isScrollEnabled = false
+        textView.isSelectable = false
+        textView.backgroundColor = .blue
+        textView.isUserInteractionEnabled = false
+        textView.font = .systemFont(ofSize: 20)
         
-//        self.backgroundColor = .lightGray
-        titleLabel.textAlignment = .center
-        titleLabel.text = "LOOOOL"
+        self.textView = textView
         
         self.addSubview(delButton)
         self.configure()
@@ -90,10 +99,10 @@ class NoteCell: UICollectionViewCell {
     
     func setTitle(title: String?) {
         guard let title = title else {
-            titleLabel.text = "Новая заметка"
+            textView.text = "Новая заметка"
             return
         }
         
-        titleLabel.text = title
+        textView.text = title
     }
 }

@@ -12,7 +12,8 @@ final class NotesCollectionView: UICollectionView {
     
     private var notes: [NoteModel] = []
     
-    public var didSelectNote: ((_ noteID: UUID) -> ())?
+    public var didSelectNote: ((_ noteID: UUID, _ isFav: Bool) -> ())?
+    public var tapDeleteHandler: ((_ noteID: UUID) -> ())?
     
     public func setData(data: [NoteModel]) {
         self.notes = data
@@ -43,7 +44,8 @@ final class NotesCollectionView: UICollectionView {
 
 extension NotesCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        didSelectNote?(notes[indexPath.item].ID)
+        print("select note id \(notes[indexPath.item].ID.uuidString)")
+        didSelectNote?(notes[indexPath.item].ID, notes[indexPath.item].isFav)
     }
 }
 
@@ -60,17 +62,14 @@ extension NotesCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(NoteCell.self)", for: indexPath) as! NoteCell
         
-        cell.setTitle(title: "kek1")
+        cell.setTitle(title: notes[indexPath.item].noteText)
+        cell.delegate = self
         
         return cell
     }
 }
 
 extension NotesCollectionView: UICollectionViewDelegateFlowLayout {
-    
-    func randomIntInRange(min: Int, max: Int) -> Int {
-        return Int(arc4random_uniform(UInt32(max - min + 1))) + min
-    }
     
     func collectionView(
             _ collectionView: UICollectionView,
@@ -88,4 +87,16 @@ extension NotesCollectionView: UICollectionViewDelegateFlowLayout {
             )
             
         }
+}
+
+extension NotesCollectionView: NoteCellDelegate {
+    func addToFavsTapped(_ cell: NoteCell) {
+        if let indexPath = self.indexPath(for: cell) {
+            tapDeleteHandler?(notes[indexPath.item].ID)
+        }
+    }
+    
+    func delTapped(_ cell: NoteCell) {
+        <#code#>
+    }
 }

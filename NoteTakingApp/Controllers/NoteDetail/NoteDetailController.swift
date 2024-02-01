@@ -10,6 +10,7 @@ import UIKit
 final class NoteDetailController: BaseController {
     
     var noteID: UUID?
+    var isFav: Bool?
     private let noteView = NoteDetailView(frame: .zero)
     private var bottomConstrWithKB: NSLayoutConstraint?
     private var bottomConstrWithoutKB: NSLayoutConstraint?
@@ -48,13 +49,24 @@ final class NoteDetailController: BaseController {
         }
     }
     
-    private func getNoteData() -> NoteModel {
-        let noteText = "LOL check"
-        return NoteModel(ID: UUID(), noteText: noteText, isFav: true)
+    private func getNoteData() -> NoteModel? {
+        if let noteID = noteID {
+            let note = DataProvider.shared.fetchNote(with: noteID)
+            if let id = note?.id, let text = note?.text, let isFav = note?.isFav {
+                return NoteModel(ID: id, noteText: text, isFav: isFav)
+            }
+        }
+        
+        return nil
     }
     
     private func saveNote(noteText: String) {
-        
+        if let noteID = noteID, let _ = isFav, let noteCoreData = DataProvider.shared.fetchNote(with: noteID) {
+            DataProvider.shared.updateNote(with: noteID, newText: noteText, isFav: noteCoreData.isFav)
+        } else {
+            let id = UUID()
+            DataProvider.shared.createNote(id, text: noteText, isFav: false)
+        }
     }
 }
 
@@ -87,8 +99,9 @@ extension NoteDetailController {
     override func configure() {
         super.configure()
           
-        let noteModel = getNoteData()
-        noteView.setData(noteModel: noteModel)
+        if let noteModel = getNoteData() {
+            noteView.setData(noteModel: noteModel)
+        }
         
         navigationItem.largeTitleDisplayMode = .never
         
